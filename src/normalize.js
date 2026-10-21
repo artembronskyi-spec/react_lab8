@@ -28,5 +28,33 @@
  * @returns {Show}
  */
 export function normalizeShow(raw) {
-  throw new Error('Not implemented');
+  if (!raw || typeof raw !== 'object') return null;
+
+  const id = raw.id ?? null;
+  const name = raw.name ?? 'Untitled';
+
+  let year = null;
+  if (typeof raw.premiered === 'string' && raw.premiered.length >= 4) {
+    const parsed = parseInt(raw.premiered.slice(0, 4), 10);
+    year = Number.isNaN(parsed) ? null : parsed;
+  }
+
+  const rating =
+    raw.rating && typeof raw.rating.average === 'number'
+      ? raw.rating.average
+      : null;
+
+  const runtime = raw.runtime ?? null;
+  const network = raw.network?.name ?? null;
+  const genres = Array.isArray(raw.genres) ? [...raw.genres] : [];
+
+  return {
+    id,
+    name,
+    year,
+    rating,
+    runtime,
+    network,
+    genres,
+  };
 }
