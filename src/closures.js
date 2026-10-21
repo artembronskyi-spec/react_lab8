@@ -13,7 +13,19 @@
  * @returns {Counter}
  */
 export function createCounter(start = 0) {
-  throw new Error('Not implemented');
+  let count = start;
+
+  return {
+    increment: () => {
+      count += 1;
+      return count;
+    },
+    reset: () => {
+      count = start;
+      return count;
+    },
+    value: () => count,
+  };
 }
 
 /**
@@ -25,7 +37,16 @@ export function createCounter(start = 0) {
  * @returns {F}
  */
 export function once(fn) {
-  throw new Error('Not implemented');
+  let called = false;
+  let result;
+
+  return function (...args) {
+    if (!called) {
+      called = true;
+      result = fn.apply(this, args);
+    }
+    return result;
+  };
 }
 
 /**
@@ -37,5 +58,14 @@ export function once(fn) {
  * @returns {(arg: T) => R}
  */
 export function memoize(fn) {
-  throw new Error('Not implemented');
+  const cache = new Map();
+
+  return function (arg) {
+    if (cache.has(arg)) {
+      return cache.get(arg);
+    }
+    const result = fn.call(this, arg);
+    cache.set(arg, result);
+    return result;
+  };
 }
