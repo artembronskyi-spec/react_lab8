@@ -15,6 +15,40 @@
  * @param {FilterOptions} [options]
  * @returns {Show[]}
  */
-export function filterShows(shows, options) {
-  throw new Error('Not implemented');
+export function filterShows(shows = [], options = {}) {
+  const { query, genre, minRating } = options || {};
+
+  const hasQuery = typeof query === 'string' && query.trim() !== '';
+  const cleanQuery = hasQuery ? query.trim().toLowerCase() : '';
+
+  const hasGenre = typeof genre === 'string' && genre.trim() !== '';
+  const cleanGenre = hasGenre ? genre.trim() : '';
+
+  const hasMinRating =
+    typeof minRating === 'number' && !Number.isNaN(minRating) && minRating > 0;
+
+  return shows.filter((show) => {
+    if (hasQuery && !show.name.toLowerCase().includes(cleanQuery)) {
+      return false;
+    }
+
+    if (
+      hasGenre &&
+      (!Array.isArray(show.genres) || !show.genres.includes(cleanGenre))
+    ) {
+      return false;
+    }
+
+    if (hasMinRating) {
+      if (
+        show.rating === null ||
+        show.rating === undefined ||
+        show.rating < minRating
+      ) {
+        return false;
+      }
+    }
+
+    return true;
+  });
 }
